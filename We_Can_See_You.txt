@@ -1,3 +1,20 @@
 Making the ability yours while exploring the darkness within the soul of the original owner... that's the true pleasure of a skill 
 
 ATTENTION IS ALL U NEED
+
+Step
+Command
+What it does
+Where it lives
+Stage
+git add
+Picks which changes go into the next commit
+Your computer (staging area)
+Commit
+git commit
+Saves the staged changes as a snapshot with a message
+Your computer (local history)
+Push
+git push
+Uploads your commits to GitHub
+GitHub (remote)
