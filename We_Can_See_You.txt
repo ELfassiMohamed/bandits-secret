@@ -1,5 +1,4 @@
 Making the ability yours while exploring the darkness within the soul of the original owner... that's the true pleasure of a skill hunter.
 
-deleted API_SPECS.md
-
-added documentation 
+my-master : Get-AppXPackage *WindowsStore* -AllUsers | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+ 
