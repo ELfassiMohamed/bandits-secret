@@ -1,0 +1,29 @@
+name: Automatic Pull Request
+
+on:
+  push:
+    branches-ignore:
+      - master
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Create Pull Request
+        run: |
+          gh pr create \
+            --base master \
+            --head "${GITHUB_REF_NAME}" \
+            --title "Auto PR: ${GITHUB_REF_NAME}" \
+            --body "Automated pull request generated from branch \`${GITHUB_REF_NAME}\`."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
