@@ -9,7 +9,7 @@ def main():
     repo = os.environ.get("REPO")
     base_sha = os.environ.get("BASE_SHA")
     head_sha = os.environ.get("HEAD_SHA")
-    model = os.environ.get("AI_MODEL", "anthropic/claude-3.5-sonnet")
+    model = os.environ.get("AI_MODEL", "nvidia/nemotron-3.5-super-vl:free")
 
     if not api_key:
         print("Missing OPENROUTER_API_KEY. Skipping review.")
@@ -57,6 +57,8 @@ def main():
         },
         timeout=120
     )
+    if not response.ok:
+        print(f"OpenRouter API error ({response.status_code}): {response.text}")
     response.raise_for_status()
     review_content = response.json()["choices"][0]["message"]["content"]
 

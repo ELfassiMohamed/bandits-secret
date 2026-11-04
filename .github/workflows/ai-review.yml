@@ -34,5 +34,5 @@ jobs:
           REPO: ${{ github.repository }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          AI_MODEL: "anthropic/claude-3.5-sonnet"
+          AI_MODEL: "nvidia/nemotron-3.5-super-vl:free"
         run: python .github/scripts/ai_review.py
