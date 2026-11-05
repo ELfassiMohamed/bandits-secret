@@ -1,11 +1,5 @@
-package com.patient_service.models;
 
-import java.time.LocalDate;
-
-/**
- * Informations personnelles d'un patient.
- */
-public class PersonalInfo {
+public class GitClass {
     private String firstName;
     private String lastName;
     private String phone;
