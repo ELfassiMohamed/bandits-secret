@@ -1,4 +1,4 @@
-name: Automatic Pull Request
+name: Automatic Pull Request & AI Review
 
 on:
   push:
@@ -9,21 +9,49 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
-  create-pr:
+  auto-pr-and-review:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Create Pull Request
+      - name: Create or Find Pull Request
+        id: pr_step
         run: |
+          # Attempt to create the PR if it does not already exist
           gh pr create \
             --base master \
             --head "${GITHUB_REF_NAME}" \
             --title "Auto PR: ${GITHUB_REF_NAME}" \
-            --body "Automated pull request generated from branch \`${GITHUB_REF_NAME}\`."
+            --body "Automated pull request generated from branch \`${GITHUB_REF_NAME}\`." || true
+
+          # Retrieve the PR number
+          PR_NUM=$(gh pr view "${GITHUB_REF_NAME}" --json number --jq .number)
+          echo "PR Number: $PR_NUM"
+          echo "pr_number=$PR_NUM" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run AI Review
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY || secrets.OPEN_ROUTER_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.pr_step.outputs.pr_number }}
+          REPO: ${{ github.repository }}
+          BASE_SHA: origin/master
+          HEAD_SHA: ${{ github.sha }}
+          AI_MODEL: "nvidia/nemotron-3.5-super-vl:free"
+        run: python .github/scripts/ai_review.py

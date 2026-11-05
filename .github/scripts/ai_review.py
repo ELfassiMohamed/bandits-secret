@@ -3,16 +3,20 @@ import subprocess
 import requests
 
 def main():
-    api_key = os.environ.get("OPENROUTER_API_KEY")
+    api_key = os.environ.get("OPENROUTER_API_KEY") or os.environ.get("OPEN_ROUTER_KEY")
     gh_token = os.environ.get("GH_TOKEN")
     pr_number = os.environ.get("PR_NUMBER")
     repo = os.environ.get("REPO")
-    base_sha = os.environ.get("BASE_SHA")
-    head_sha = os.environ.get("HEAD_SHA")
+    base_sha = os.environ.get("BASE_SHA", "origin/master")
+    head_sha = os.environ.get("HEAD_SHA", "HEAD")
     model = os.environ.get("AI_MODEL", "nvidia/nemotron-3.5-super-vl:free")
 
     if not api_key:
-        print("Missing OPENROUTER_API_KEY. Skipping review.")
+        print("Missing OPENROUTER_API_KEY / OPEN_ROUTER_KEY. Skipping review.")
+        return
+
+    if not pr_number:
+        print("Missing PR_NUMBER. Skipping review.")
         return
 
     # 1. Fetch git diff
